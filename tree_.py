@@ -47,12 +47,6 @@ class BinaryOpNode(Node):
     def __str__(self) -> str:
         return f"({self.num1} {self.op.value} {self.num2})"
 
-
-class UnaryOpNode(Node):
-    def __init__(self, op_token, num_token) -> None:
-        super().__init__(op_token, num_token)
-        self.op = self.value
-        
 """
 Generic Binary Tree Data Structure
 """

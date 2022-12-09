@@ -2,26 +2,31 @@ from parser_ import Parser
 from syntax_converter import *
 from evaluator_ import Evaluator
 
-# Input your expression here!
 
-# s = " (11 + 32 / -(-23+1))+ (-(11/237+(169-36))*42) - -92     "
-# s = "-(-1)"
-s =  "(2+3*2)+((-2*5+8)*1)"
+def main():
+    # Input your expression here!
 
-parser = Parser(s)
-ast = parser.get_ast()
-print(ast)
+    # s = " (11 + 32 / -(-23+1))+ (-(11/237+(169-36))*42) - -92     "
+    # s = "-(-1)"
+    s =  "(2+3*2)+((-2*5+8)*1)"
 
-if bool(ast):
-    # print(infix_to_prefix(s))
-    print(to_prefix(ast))
-    # print(infix_to_postfix(s))
-    print(to_postfix(ast))
+    parser = Parser(s)
+    ast = parser.get_ast()
+    print(ast)
 
-    interpreter = Evaluator(ast)
-    print(interpreter.eval())
+    if bool(ast):
+        # print(infix_to_prefix(s))
+        print(to_prefix(ast))
+        # print(infix_to_postfix(s))
+        print(to_postfix(ast))
 
-else:
-    print("Invalid Expression")
+        interpreter = Evaluator(ast)
+        print(interpreter.eval())
 
-print(eval(str(s)))
+    else:
+        print("Invalid Expression")
+
+    print(eval(str(s)))
+
+if __name__ == "__main__":
+    main()
