@@ -33,10 +33,7 @@ class Tokenizer:
                     break
                 number += char
                 self.cursor += 1
-            return Token("DIGIT", number)
-        if STRING[0] == "~":
-            self.cursor += 1
-            return Token("NEGATE", STRING[0])   
+            return Token("DIGIT", number)   
         if self.is_minus(STRING[0]): # overloaded '-' symbol
             minus = STRING[0]
             idx_prev_char = self.cursor - 1
