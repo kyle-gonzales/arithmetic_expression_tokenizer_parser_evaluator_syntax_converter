@@ -103,17 +103,22 @@ class Parser:
 
         return prev # epsilon transition; return previous node
 
-    def factor(self) -> BinaryOpNode:
+    def factor(self) -> BinaryOpNode or NumberNode:
         t = self.look_ahead
         if t.type in ("DIGIT", "OPEN_PAREN"): # factor can be a digit or open_paren
             return self.final()
         elif t.type == "NEGATE": # factor can be be a negation
             self.eat() # consume negative sign
-            token = self.final()
-            if token is None:
+            node_exp = self.final()
+            if node_exp is None:
                 return None
-            token.value.value = str(-int(token.value.value))
-            return token
+
+            if isinstance(node_exp, NumberNode):
+                node_exp.value.value = str(-int(node_exp.value.value)) #! error if node_exp is a BinaryOpNode
+                return node_exp    
+            if isinstance(node_exp, BinaryOpNode): # convert -(<exp>) to (0-(<exp>)); Example: -(1+2) -> (0 - (1+2))
+                node_exp = BinaryOpNode(NumberNode(Token("DIGIT", "0")), Token("MINUS", '-'), node_exp)
+                return node_exp
         else:
             self.valid = False
             return None

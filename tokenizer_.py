@@ -28,18 +28,20 @@ class Tokenizer:
             return self.get_next_token()
         if STRING[0].isdecimal():
             number = ""
-            for char in STRING: #? maybe check if there is a next token
+            for char in STRING:
                 if not char.isdecimal():
                     break
                 number += char
                 self.cursor += 1
-            return Token("DIGIT", number)
-        if STRING[0] == "~":
-            self.cursor += 1
-            return Token("NEGATE", STRING[0])   
-        if self.is_minus(STRING[0]):
+            return Token("DIGIT", number)   
+        if self.is_minus(STRING[0]): # overloaded '-' symbol
             minus = STRING[0]
+            idx_prev_char = self.cursor - 1
             self.cursor += 1
+            while idx_prev_char > 0 and self.s[idx_prev_char].isspace(): # check last character to get context of '-' symbol
+                idx_prev_char -= 1
+            if self.is_unary_negation(idx_prev_char):
+                return Token("NEGATE", minus)
             return Token("MINUS", minus)
         if self.is_plus(STRING[0]):
             plus = STRING[0]
@@ -64,14 +66,15 @@ class Tokenizer:
         else:
             raise SyntaxError(f"Invalid Token: '{STRING[0]}'")
 
-    def has_more_tokens(self):
-        return self.cursor < len(self.s)
-
     """
     Helper Functions
     """
-    def is_digit(self, s):
-        return s == '0' or s == '1' or s == '2' or s == '3'
+    def has_more_tokens(self):
+        return self.cursor < len(self.s)
+
+    def is_unary_negation(self, idx): # if the character is the first character or if previous non-space character is an operation or opening parenthesis, the '-' must represent unary negation
+        return idx <= 0 or self.s[idx] in "+-*/(" 
+
     def is_plus(self, s):
         return s == "+"
     def is_minus(self, s):
